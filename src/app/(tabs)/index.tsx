@@ -1,33 +1,29 @@
 import { Ionicons } from "@expo/vector-icons";
-import {
-    addDays,
-    addMonths,
-    addWeeks,
-    addYears
-} from "date-fns";
+import { addDays, addMonths, addWeeks, addYears } from "date-fns";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-    Alert,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  Alert,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { ExportModal } from "../../components/ExportModal";
 import { FilterModal } from "../../components/FilterModal";
+import { PeriodPickerModal } from "../../components/PeriodPickerModal";
 import { SortModal } from "../../components/SortModal";
 import { SummaryHeader } from "../../components/SummaryHeader";
 import { TransactionList } from "../../components/TransactionList";
 import { TransactionType } from "../../constants/categories";
 import {
-    SortType,
-    useFilteredTransactions,
+  SortType,
+  useFilteredTransactions,
 } from "../../hooks/useFilteredTransactions";
 import {
-    Transaction,
-    useTransactionStore,
+  Transaction,
+  useTransactionStore,
 } from "../../store/useTransactionStore";
 import { PeriodType, formatDisplayDate } from "../../utils/dateHelper";
 
@@ -40,9 +36,10 @@ export default function HomeScreen() {
   const [showSort, setShowSort] = useState(false);
   const [showExport, setShowExport] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showPeriodPicker, setShowPeriodPicker] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [typeFilter, setTypeFilter] = useState<TransactionType | "semua">(
-    "pemasukan",
+    "semua",
   );
   const [sort, setSort] = useState<SortType>("terbaru");
 
@@ -96,6 +93,9 @@ export default function HomeScreen() {
       case "category":
         setShowFilter(true);
         break;
+      case "settings":
+        router.push("/settings" as any);
+        break;
     }
   };
 
@@ -103,18 +103,25 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container}>
       {/* Top Bar */}
       <View style={styles.topBar}>
-        {/* Period Navigator */}
         <TouchableOpacity onPress={() => navigatePeriod("prev")}>
           <Ionicons name="chevron-back" size={20} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.periodLabel}>
-          {formatDisplayDate(currentDate, period)}
-        </Text>
+
+        {/* Klik label untuk buka period picker */}
+        <TouchableOpacity
+          style={styles.periodLabelBtn}
+          onPress={() => setShowPeriodPicker(true)}
+        >
+          <Text style={styles.periodLabel}>
+            {formatDisplayDate(currentDate, period)}
+          </Text>
+          <Ionicons name="chevron-down" size={14} color="#ffffff80" />
+        </TouchableOpacity>
+
         <TouchableOpacity onPress={() => navigatePeriod("next")}>
           <Ionicons name="chevron-forward" size={20} color="#fff" />
         </TouchableOpacity>
 
-        {/* Action Icons */}
         <View style={styles.topActions}>
           <TouchableOpacity onPress={() => setShowExport(true)}>
             <Ionicons name="download-outline" size={22} color="#fff" />
@@ -213,6 +220,13 @@ export default function HomeScreen() {
         onClose={() => setShowSort(false)}
       />
       <ExportModal visible={showExport} onClose={() => setShowExport(false)} />
+      <PeriodPickerModal
+        visible={showPeriodPicker}
+        period={period}
+        currentDate={currentDate}
+        onSelect={(date) => setCurrentDate(date)}
+        onClose={() => setShowPeriodPicker(false)}
+      />
     </SafeAreaView>
   );
 }
@@ -227,8 +241,14 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     gap: 8,
   },
-  periodLabel: {
+  periodLabelBtn: {
     flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 4,
+  },
+  periodLabel: {
     color: "#fff",
     fontWeight: "700",
     fontSize: 14,

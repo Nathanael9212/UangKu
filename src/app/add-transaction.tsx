@@ -2,22 +2,26 @@ import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import {
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { CategoryPicker } from "../components/CategoryPicker";
 import { Category, TransactionType } from "../constants/categories";
 import { useTransactionStore } from "../store/useTransactionStore";
 import { formatRupiah, parseRupiah } from "../utils/currency";
 import { formatDate } from "../utils/dateHelper";
+
+const goBack = () => {
+  router.canGoBack() ? router.back() : router.replace("/(tabs)");
+};
 
 export default function AddTransactionScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
@@ -30,9 +34,7 @@ export default function AddTransactionScreen() {
   const [type, setType] = useState<TransactionType>(
     existing?.type ?? "pemasukan",
   );
-  const [date, setDate] = useState(
-    existing ? new Date(existing.date) : new Date(),
-  );
+  const [date] = useState(existing ? new Date(existing.date) : new Date());
   const [category, setCategory] = useState(existing?.category ?? "");
   const [categoryLabel, setCategoryLabel] = useState(
     existing?.categoryLabel ?? "",
@@ -70,7 +72,7 @@ export default function AddTransactionScreen() {
       addTransaction(tx);
     }
 
-    router.back();
+    goBack();
   };
 
   const handleAmountChange = (val: string) => {
@@ -84,9 +86,8 @@ export default function AddTransactionScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={goBack}>
           <Ionicons name="chevron-back-circle-outline" size={28} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>
@@ -99,7 +100,6 @@ export default function AddTransactionScreen() {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <ScrollView contentContainerStyle={styles.form}>
-          {/* Type Toggle */}
           <View style={styles.typeRow}>
             {(["pemasukan", "pengeluaran"] as TransactionType[]).map((t) => (
               <TouchableOpacity
@@ -129,13 +129,11 @@ export default function AddTransactionScreen() {
             ))}
           </View>
 
-          {/* Tanggal */}
           <Text style={styles.label}>Tanggal</Text>
           <View style={styles.input}>
             <Text style={styles.inputText}>{formatDate(date)}</Text>
           </View>
 
-          {/* Kategori */}
           <Text style={styles.label}>Kategori</Text>
           <TouchableOpacity
             style={styles.inputRow}
@@ -149,7 +147,6 @@ export default function AddTransactionScreen() {
             <Ionicons name="chevron-down" size={18} color="#94A3B8" />
           </TouchableOpacity>
 
-          {/* Jumlah */}
           <Text style={styles.label}>Jumlah</Text>
           <TextInput
             style={styles.inputField}
@@ -160,7 +157,6 @@ export default function AddTransactionScreen() {
             placeholderTextColor="#94A3B8"
           />
 
-          {/* Deskripsi */}
           <Text style={styles.label}>Deskripsi</Text>
           <TextInput
             style={styles.inputField}
@@ -170,7 +166,6 @@ export default function AddTransactionScreen() {
             placeholderTextColor="#94A3B8"
           />
 
-          {/* Save Button */}
           <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
             <Text style={styles.saveBtnText}>Save</Text>
           </TouchableOpacity>
@@ -198,20 +193,9 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     gap: 12,
   },
-  headerTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#fff",
-  },
-  form: {
-    padding: 20,
-    gap: 4,
-  },
-  typeRow: {
-    flexDirection: "row",
-    gap: 10,
-    marginBottom: 16,
-  },
+  headerTitle: { fontSize: 16, fontWeight: "700", color: "#fff" },
+  form: { padding: 20, gap: 4 },
+  typeRow: { flexDirection: "row", gap: 10, marginBottom: 16 },
   typeBtn: {
     flex: 1,
     paddingVertical: 12,
@@ -223,12 +207,7 @@ const styles = StyleSheet.create({
   typeBtnExpense: { backgroundColor: "#DC2626" },
   typeBtnText: { fontSize: 14, fontWeight: "600", color: "#64748B" },
   typeBtnTextActive: { color: "#fff" },
-  label: {
-    fontSize: 13,
-    color: "#64748B",
-    marginTop: 12,
-    marginBottom: 6,
-  },
+  label: { fontSize: 13, color: "#64748B", marginTop: 12, marginBottom: 6 },
   input: {
     borderWidth: 1,
     borderColor: "#E2E8F0",

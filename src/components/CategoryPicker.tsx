@@ -1,17 +1,18 @@
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {
-    Modal,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import {
-    Category,
-    PEMASUKAN_CATEGORIES,
-    PENGELUARAN_CATEGORIES,
-    TransactionType,
+  Category,
+  PEMASUKAN_CATEGORIES,
+  PENGELUARAN_CATEGORIES,
+  TransactionType,
 } from "../constants/categories";
 
 interface Props {
@@ -38,24 +39,44 @@ export const CategoryPicker: React.FC<Props> = ({
         <View style={styles.sheet}>
           <Text style={styles.title}>Pilih Kategori</Text>
           <ScrollView>
-            {categories.map((cat) => (
-              <TouchableOpacity
-                key={cat.id}
-                style={styles.item}
-                onPress={() => {
-                  onSelect(cat);
-                  onClose();
-                }}
-              >
-                <View
-                  style={[
-                    styles.radio,
-                    selected === cat.id && styles.radioSelected,
-                  ]}
-                />
-                <Text style={styles.label}>{cat.label}</Text>
-              </TouchableOpacity>
-            ))}
+            {categories.map((cat) => {
+              const isSelected = selected === cat.id;
+              return (
+                <TouchableOpacity
+                  key={cat.id}
+                  style={[styles.item, isSelected && styles.itemSelected]}
+                  onPress={() => {
+                    onSelect(cat);
+                    onClose();
+                  }}
+                >
+                  <View
+                    style={[
+                      styles.iconBox,
+                      { backgroundColor: cat.color + "20" },
+                    ]}
+                  >
+                    <Ionicons
+                      name={cat.icon as any}
+                      size={18}
+                      color={cat.color}
+                    />
+                  </View>
+                  <Text
+                    style={[styles.label, isSelected && styles.labelSelected]}
+                  >
+                    {cat.label}
+                  </Text>
+                  {isSelected && (
+                    <Ionicons
+                      name="checkmark-circle"
+                      size={18}
+                      color={cat.color}
+                    />
+                  )}
+                </TouchableOpacity>
+              );
+            })}
           </ScrollView>
           <TouchableOpacity style={styles.cancelBtn} onPress={onClose}>
             <Text style={styles.cancelText}>Batal</Text>
@@ -92,21 +113,26 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#F1F5F9",
     gap: 12,
+    borderRadius: 8,
+    paddingHorizontal: 8,
   },
-  radio: {
-    width: 20,
-    height: 20,
+  itemSelected: {
+    backgroundColor: "#F8FAFC",
+  },
+  iconBox: {
+    width: 36,
+    height: 36,
     borderRadius: 10,
-    borderWidth: 2,
-    borderColor: "#CBD5E1",
-  },
-  radioSelected: {
-    borderColor: "#2563EB",
-    backgroundColor: "#2563EB",
+    alignItems: "center",
+    justifyContent: "center",
   },
   label: {
+    flex: 1,
     fontSize: 14,
     color: "#1E293B",
+  },
+  labelSelected: {
+    fontWeight: "700",
   },
   cancelBtn: {
     marginTop: 16,

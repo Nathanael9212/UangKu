@@ -2,12 +2,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { CategoryPicker } from "../components/CategoryPicker";
 import { SummaryHeader } from "../components/SummaryHeader";
@@ -75,7 +75,11 @@ export default function SearchScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity
+          onPress={() =>
+            router.canGoBack() ? router.back() : router.replace("/(tabs)")
+          }
+        >
           <Ionicons name="chevron-back-circle-outline" size={28} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Cari Catatan</Text>

@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    Modal,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  Modal,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { ALL_CATEGORIES } from "../constants/categories";
 import { useTransactionStore } from "../store/useTransactionStore";
@@ -51,8 +52,9 @@ export const ExportModal: React.FC<Props> = ({ visible, onClose }) => {
           <View style={styles.sheet}>
             <Text style={styles.successTitle}>Catatan Berhasil di eksport</Text>
             <Text style={styles.successMsg}>
-              File Tersimpan di storage/laporan/{"\n"}
-              Keuangan {formatDate(fromDate)} - {formatDate(toDate)}.xls
+              {Platform.OS === "web"
+                ? `File berhasil didownload ke folder Downloads kamu.\nKeuangan ${formatDate(fromDate)} - ${formatDate(toDate)}.xlsx`
+                : `File Tersimpan di storage/laporan/\nKeuangan ${formatDate(fromDate)} - ${formatDate(toDate)}.xlsx`}
             </Text>
             <View style={styles.btnRow}>
               <TouchableOpacity

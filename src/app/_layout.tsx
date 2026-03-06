@@ -10,10 +10,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen
           name="add-transaction"
-          options={{
-            presentation: "modal",
-            animation: "slide_from_bottom",
-          }}
+          options={{ presentation: "modal", animation: "slide_from_bottom" }}
         />
         <Stack.Screen
           name="search"
@@ -21,6 +18,14 @@ export default function RootLayout() {
         />
         <Stack.Screen
           name="chart"
+          options={{ animation: "slide_from_right" }}
+        />
+        <Stack.Screen
+          name="settings"
+          options={{ animation: "slide_from_right" }}
+        />
+        <Stack.Screen
+          name="budget"
           options={{ animation: "slide_from_right" }}
         />
       </Stack>

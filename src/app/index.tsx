@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import React from "react";
 import {
   SafeAreaView,
@@ -9,21 +9,23 @@ import {
 } from "react-native";
 
 export default function WelcomeScreen() {
+  const router = useRouter();
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.title}>Welcome to UangKu</Text>
-
         <View style={styles.iconContainer}>
           <Text style={styles.iconEmoji}>💰</Text>
         </View>
-
         <Text style={styles.subtitle}>Atur Keuanganmu{"\n"}Dengan Mudah</Text>
       </View>
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => router.push("/(tabs)/index")}
+        onPress={() => {
+          router.replace("/(tabs)");
+        }}
       >
         <Text style={styles.buttonText}>Get Started !</Text>
       </TouchableOpacity>
